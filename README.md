@@ -1,11 +1,8 @@
-# Commands-RobloxX
-
 -- Prints are required ("May not work") 
 -- Version 1.0
 -- Commands Hub 
 -- Script made by a Brazilian, so pay close attention to what is in the Prints and some local names. 
 -- Anti-cheat only on Speed, then I'll move on to the whole code ("In an experiment it can be detected, I will think about improving it later")
-
 --Roblox Script 
 
 local TweenService = game:GetService("TweenService")
