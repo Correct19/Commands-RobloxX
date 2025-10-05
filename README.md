@@ -475,34 +475,49 @@ end
 local function applyAntiLagSettings()
     saveOriginalSettings()
     pcall(function()
-        Lighting.Brightness = 3.5
+        -- Configurações de iluminação
+        Lighting.Brightness = 4.5
         Lighting.GlobalShadows = false
         Lighting.FogEnd = 100000
         Lighting.FogStart = 0
         Lighting.Ambient = Color3.fromRGB(150, 150, 150)
-        Lighting.OutdoorAmbient = Color3.fromRGB(150, 150, 150)       
+        Lighting.OutdoorAmbient = Color3.fromRGB(150, 150, 150)        
+        -- Remove e desativa efeitos visuais
         for _, obj in pairs(workspace:GetDescendants()) do
             pcall(function()
-                if obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Explosion") then
-                    obj:Destroy()
+                -- Remove completamente
+                if obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Explosion") or 
+                   obj:IsA("Sparkles") or obj:IsA("PointLight") or obj:IsA("SpotLight") or 
+                   obj:IsA("SurfaceLight") then
+                    obj:Destroy()                      
+                elseif obj:IsA("Decal") or obj:IsA("Texture") then
+                    obj:Destroy()                          
                 elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam") then
                     if obj.Enabled then
                         obj.Enabled = false
                         table.insert(disabledObjects, {obj = obj, property = "Enabled", originalValue = true})
                     end
+                elseif obj:IsA("MeshPart") then
+                    if obj.RenderFidelity ~= Enum.RenderFidelity.Performance then
+                        local original = obj.RenderFidelity
+                        obj.RenderFidelity = Enum.RenderFidelity.Performance
+                        table.insert(disabledObjects, {obj = obj, property = "RenderFidelity", originalValue = original})
+                    end
                 end
             end)
         end
+        print("ANTI-LAG: Efeitos removidos e otimização aplicada")
     end)
 end
 
 local function restoreOriginalSettings()
     pcall(function()
+        -- Restaura iluminação
         for property, value in pairs(originalSettings) do
             if Lighting[property] ~= nil then
                 Lighting[property] = value
             end
-        end       
+        end   
         for _, data in pairs(disabledObjects) do
             pcall(function()
                 if data.obj and data.obj.Parent then
@@ -510,7 +525,8 @@ local function restoreOriginalSettings()
                 end
             end)
         end
-        disabledObjects = {}
+        disabledObjects = {} 
+        print("ANTI-LAG: Configurações restauradas")
     end)
 end
 
